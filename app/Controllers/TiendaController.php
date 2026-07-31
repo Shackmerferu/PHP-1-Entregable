@@ -42,6 +42,6 @@ class TiendaController {
         $cantidadItems = $carrito->getCantidadItems();
         $subtotal = $carrito->calcularSubtotal();
 
-        require_once __DIR__ . '/../Views/layout.php';
+        require_once __DIR__ . '/../Views/tienda.php';
     }
 }
