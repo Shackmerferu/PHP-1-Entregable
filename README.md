@@ -16,10 +16,10 @@ Proyecto de PHP + Laravel (Entrega 1). Tienda simple con PHP puro y MVC hecho a 
 ## Correr
 
 ```bash
-php -S localhost:8000 -t public
+Iniciar apache por XAMPP
 ```
-
-Después entrá a `http://localhost:8000`.
+Una vez iniciado
+Después entrá a `http://localhost/ruta_carpeta/index.php`.
 
 ## Páginas
 
@@ -33,9 +33,9 @@ El carrito se guarda en la sesión del navegador.
 ```
 public/            index.php (punto de entrada)
 app/
-  Controllers/     reciben la ruta y arman los datos
+  Controllers/     Controladores por modelo y tienda
   Models/          Producto, Categoria, Usuario, Carrito
-  Views/           HTML que muestra cada página
+  Views/           Tienda y Carrito correspondientes
 ```
 
 Flujo: el navegador pega a `public/index.php`, este elige el controlador según `ruta`, el controlador arma los objetos y le pasa los datos a la vista, y la vista genera el HTML.
