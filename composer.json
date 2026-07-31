@@ -1,0 +1,17 @@
+{
+    "name": "julia/tienda-clase-01",
+    "type": "project",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Shackmerferu",
+            "email": "lucianocayssials@gmail.com"
+        }
+    ],
+    "require": {}
+}
