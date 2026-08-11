@@ -1,58 +1,40 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Tienda de Negocios 🎍
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Proyecto integrador de la materia **PHP & Laravel | La Pampa**.
+Tienda en línea construida de forma incremental en entregas. Esta es la **Entrega 2**: migración del diseño de dominio y MVC de la Entrega 1 hacia el framework **Laravel**, con Eloquent ORM, migraciones, validación con Form Requests y vistas Blade navegables.
 
-## About Laravel
-
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
-
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
-
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
-
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## Instalación
 
 ```bash
-composer require laravel/boost --dev
+# 1. Crear el proyecto con Composer
+composer create-project laravel/laravel tienda-online
 
-php artisan boost:install
+# 2. Configurar la base de datos en .env (MySQL)
+# DB_CONNECTION=mysql
+# DB_DATABASE=tienda_online
+
+# 3. Ejecutar las migraciones para crear el esquema
+php artisan migrate
+
+# 4. Levantar el servidor de desarrollo
+php artisan serve
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+## Estructura del proyecto (comparación con la Entrega 1)
 
-## Contributing
+| Entrega 1 (PHP puro)          | Entrega 2 (Laravel)             | Función |
+|-------------------------------|---------------------------------|---------|
+| `public/index.php` (router a mano) | `public/index.php` (front controller) | punto de entrada de toda la app |
+| `app/Controllers/`            | `app/Http/Controllers/`         | reciben la request y coordinan el flujo |
+| `app/Models/` (clases con getters) | `app/Models/` (extienden `Model`) | representan tablas de la BD |
+| `app/Views/` (`require_once`) | `resources/views/*.blade.php`   | plantillas con el motor Blade |
+| datos en arrays + sesión      | base de datos MySQL (Eloquent)  | persistencia real |
+| `-`                           | `database/migrations/`          | versionado de la estructura de la BD |
+| `-`                           | `.env`, `config/`               | configuración centralizada |
+| `-`                           | `routes/web.php`, `routes/api.php` | definición de rutas declarativa |
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## ¿Por qué Laravel y no PHP puro o Lumen?
 
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- **PHP puro:** hay que escribir a mano rutas, conexión a BD, validación y seguridad (CSRF, XSS, SQL injection). Sirve para aprender MVC, pero no escala.
+- **Lumen:** microframework del mismo equipo, muy liviano y rápido, **solo para APIs REST**. No incluye Blade completo ni autenticación; falta agregar todo manualmente.
+- **Laravel:** framework completo: enrutamiento, Eloquent ORM, Blade, migraciones, validación y middleware listos para usar. Es la opción correcta para una tienda con vistas web navegables y base de datos.
