@@ -25,14 +25,6 @@ class CarritoController
     }
 
     /**
-     * Redirecciona al carrito (no hay formulario de alta dedicado).
-     */
-    public function create()
-    {
-        return redirect()->route('carrito.index');
-    }
-
-    /**
      * Agrega un producto al carrito. Si ya existe, incrementa la cantidad.
      */
     public function store(Request $request)
@@ -52,22 +44,6 @@ class CarritoController
 
         return redirect()->route('carrito.index')
             ->with('ok', 'Producto agregado al carrito.');
-    }
-
-    /**
-     * Redirecciona al carrito (el detalle se ve en el listado).
-     */
-    public function show(string $id)
-    {
-        return redirect()->route('carrito.index');
-    }
-
-    /**
-     * Redirecciona al carrito (las cantidades se editan en el listado).
-     */
-    public function edit(string $id)
-    {
-        return redirect()->route('carrito.index');
     }
 
     /**
