@@ -2,63 +2,108 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CarritoItem;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class CarritoController
 {
     /**
-     * Display a listing of the resource.
+     * Muestra el carrito del usuario actual con su total.
      */
     public function index()
     {
-        //
+        $usuario = $this->usuarioActual();
+
+        $items = $usuario->carritoItems()
+            ->with('producto.categoria')
+            ->get();
+
+        $total = $items->sum(fn ($item) => $item->producto->precio * $item->cantidad);
+
+        return view('carrito.index', compact('items', 'total'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Redirecciona al carrito (no hay formulario de alta dedicado).
      */
     public function create()
     {
-        //
+        return redirect()->route('carrito.index');
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Agrega un producto al carrito. Si ya existe, incrementa la cantidad.
      */
     public function store(Request $request)
     {
-        //
+        $datos = $request->validate([
+            'producto_id' => ['required', 'exists:productos,id'],
+            'cantidad' => ['required', 'integer', 'min:1'],
+        ]);
+
+        $item = CarritoItem::firstOrNew([
+            'user_id' => $this->usuarioActual()->id,
+            'producto_id' => $datos['producto_id'],
+        ]);
+
+        $item->cantidad = ($item->cantidad ?? 0) + $datos['cantidad'];
+        $item->save();
+
+        return redirect()->route('carrito.index')
+            ->with('ok', 'Producto agregado al carrito.');
     }
 
     /**
-     * Display the specified resource.
+     * Redirecciona al carrito (el detalle se ve en el listado).
      */
     public function show(string $id)
     {
-        //
+        return redirect()->route('carrito.index');
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Redirecciona al carrito (las cantidades se editan en el listado).
      */
     public function edit(string $id)
     {
-        //
+        return redirect()->route('carrito.index');
     }
 
     /**
-     * Update the specified resource in storage.
+     * Actualiza la cantidad de un item del carrito.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, CarritoItem $carrito)
     {
-        //
+        $datos = $request->validate([
+            'cantidad' => ['required', 'integer', 'min:1'],
+        ]);
+
+        $carrito->update($datos);
+
+        return redirect()->route('carrito.index')
+            ->with('ok', 'Cantidad actualizada.');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Elimina un item del carrito.
      */
-    public function destroy(string $id)
+    public function destroy(CarritoItem $carrito)
     {
-        //
+        $carrito->delete();
+
+        return redirect()->route('carrito.index')
+            ->with('ok', 'Producto quitado del carrito.');
+    }
+
+    /**
+     * Devuelve el usuario autenticado o un usuario demo de respaldo.
+     */
+    private function usuarioActual(): User
+    {
+        return auth()->user() ?? User::query()->firstOrCreate(
+            ['email' => 'demo@tienda.test'],
+            ['name' => 'Usuario Demo', 'password' => 'password']
+        );
     }
 }
