@@ -59,3 +59,27 @@ Reglas aplicadas (ambas clases):
 | `categoria_id` | `required`, `exists:categorias,id`                         |
 
 **Regla personalizada (`reglaStockConEstado`):** un `Closure` que valida la coherencia entre `estado` y `stock`. Si el producto figura como **Disponible**, su stock debe ser mayor a `0`; de lo contrario la validación falla con el mensaje *"Un producto Disponible debe tener stock mayor a 0."*
+
+## Flujo de información en Laravel
+
+Cuando el navegador pide `GET /productos`, la petición recorre la cadena **ruta → controlador → modelo → vista → respuesta**:
+
+1. **Punto de entrada** — `public/index.php` arranca la aplicación y crea el kernel HTTP (`bootstrap/app.php`).
+2. **Middleware** — la request atraviesa la pila del grupo `web` (sesión, cookies, CSRF, etc.) antes de llegar a la ruta.
+3. **Ruta** — `routes/web.php` asocia `GET /productos` con `ProductoController@index`, bajo el nombre `productos.index`:
+   ```php
+   Route::resource('productos', ProductoController::class);
+   ```
+4. **Controlador** — `ProductoController::index()` consulta datos con Eloquent y pasa el resultado a la vista:
+   ```php
+   public function index()
+   {
+       $productos = Producto::with('categoria')->paginate(9);
+       return view('productos.index', compact('productos'));
+   }
+   ```
+5. **Modelo** — `Producto` (Eloquent) ejecuta la consulta SQL sobre la tabla `productos` de MySQL y carga la relación `categoria` para evitar consultas innecesarias (N+1).
+6. **Vista** — `resources/views/productos/index.blade.php` se compila a PHP y genera el HTML con los datos recibidos.
+7. **Respuesta** — Laravel envía la respuesta HTTP con el HTML renderizado y el navegador la muestra.
+
+Para un `POST` (por ejemplo crear un producto) el flujo incluye además el **Form Request** (`StoreProductRequest`), que valida los datos antes de que el controlador persista con `Producto::create()`; si la validación falla, redirige de vuelta con los errores.
