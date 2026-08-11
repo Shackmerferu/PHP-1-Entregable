@@ -38,3 +38,24 @@ php artisan serve
 - **PHP puro:** hay que escribir a mano rutas, conexión a BD, validación y seguridad (CSRF, XSS, SQL injection). Sirve para aprender MVC, pero no escala.
 - **Lumen:** microframework del mismo equipo, muy liviano y rápido, **solo para APIs REST**. No incluye Blade completo ni autenticación; falta agregar todo manualmente.
 - **Laravel:** framework completo: enrutamiento, Eloquent ORM, Blade, migraciones, validación y middleware listos para usar. Es la opción correcta para una tienda con vistas web navegables y base de datos.
+
+## Validación con Form Requests
+
+La entrada al crear y editar productos se valida con **Form Requests**, que centralizan las reglas fuera del controlador:
+
+- `app/Http/Requests/StoreProductRequest.php` — se inyecta en `ProductoController@store`.
+- `app/Http/Requests/UpdateProductRequest.php` — se inyecta en `ProductoController@update`.
+
+Reglas aplicadas (ambas clases):
+
+| Campo          | Reglas                                                     |
+|----------------|------------------------------------------------------------|
+| `nombre`       | `required`, `string`, `max:120`                            |
+| `descripcion`  | `nullable`, `string`, `max:500`                            |
+| `precio`       | `required`, `numeric`, `min:0`                             |
+| `stock`        | `required`, `integer`, `min:0`, regla personalizada        |
+| `imagen`       | `nullable`, `string`, `max:255`                            |
+| `estado`       | `required`, `in:Disponible,Agotado`                        |
+| `categoria_id` | `required`, `exists:categorias,id`                         |
+
+**Regla personalizada (`reglaStockConEstado`):** un `Closure` que valida la coherencia entre `estado` y `stock`. Si el producto figura como **Disponible**, su stock debe ser mayor a `0`; de lo contrario la validación falla con el mensaje *"Un producto Disponible debe tener stock mayor a 0."*
