@@ -20,11 +20,17 @@ class Producto extends Model
         'stock',
         'imagen',
         'estado', // ¡No olvides agregarlo aquí!
-        'categoria_id' 
+        'categoria_id'
     ];
 
     public function categoria()
     {
         return $this->belongsTo(Categoria::class);
     }
+
+    protected function casts(): array
+    {
+        return ['precio' => 'decimal:2', 'stock' => 'integer'];
+    }
+
 }
